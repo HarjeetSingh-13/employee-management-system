@@ -1,8 +1,47 @@
 import "./WorkersDetails.css";
 import abc from "../../assets/abc.png";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getWorker, updateWorker } from "../../api/api";
+import { useState } from "react";
 
 function WorkersDetails() {
+  const queryClient = useQueryClient();
+  const params = useParams();
+  const id = params.id;
+
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ["workers", id],
+    queryFn: getWorker,
+  });
+
+  const [updateInfo, setUpdateInfo] = useState({
+    name: "",
+    phoneNumber: "",
+    age: "",
+    id: id,
+  });
+
+  const updateMutate = useMutation({
+    mutationFn: updateWorker,
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries(workers);
+    // },
+  });
+  const handleChange = (e) => {
+    setUpdateInfo({
+      ...updateInfo,
+      [e.target.name]: e.target.value,
+    });
+  };
+  const handleSubmit = (e) => {
+    // e.preventDefault();
+    updateMutate.mutate(updateInfo);
+  };
+
+  if (isLoading) return "loading...";
+  if (isError) return `error: ${error.message}`;
   return (
     <>
       <div className="insights">
@@ -16,23 +55,31 @@ function WorkersDetails() {
               <form>
                 <p>
                   <label htmlFor="name">Name</label>
-                  <input type="text" name="name" id="name" />
+                  <input type="text" name="name" id="name" onChange={handleChange} placeholder={data.name}/>
                 </p>
                 <p>
                   <label htmlFor="phone">Phone Number</label>
-                  <input type="text" name="phone" id="phone" />
+                  <input type="text" name="phoneNumber" id="phone" onChange={handleChange} placeholder={data.phoneNumber}/>
                 </p>
+                <p>
+                  <label htmlFor="phone">Age</label>
+                  <input type="text" name="age" id="age" onChange={handleChange} placeholder={data.age}/>
+                </p>
+                {/* <p>
+                  <label htmlFor="phone">Salary</label>
+                  <input type="text" name="phone" id="phone" />
+                </p> */}
                 <p>
                   <label htmlFor="photo">Profile Photo</label>
                   <input type="file" name="photo" id="photo" />
                 </p>
                 <p>
-                  <button>Update</button>
+                  <button onClick={handleSubmit}>Update</button>
                 </p>
               </form>
             </div>
             <p className="closebtn">
-              <Link to={"/workerdetails"}>
+              <Link to={`/workerdetails/${id}`}>
                 <button>
                   <span className="material-symbols-outlined">close</span>
                 </button>

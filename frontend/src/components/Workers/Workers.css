@@ -1,23 +1,49 @@
-.wheader{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.wheader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 30px;
+  margin-bottom: 0px;
 }
-.wheader h2{
-    margin-left: 30px;
+.wheader h1 {
+  margin-left: 30px;
 }
-.wheader p{
-    display: grid;
-    place-content: center;
-    margin-right: 100px;
-    color: var(--color-primary-variant);
-    height: 40px;
-    width: 200px;
-    box-shadow: var(--box-shadow);
-    border-radius: var(--border-radius-3);
-    background: var(--color-info-light);
-    transition: all .2s ease-in;
+.wheader p {
+  display: grid;
+  place-content: center;
+  margin-right: 100px;
+  color: var(--color-primary-variant);
+  height: 40px;
+  width: 200px;
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius-3);
+  background: var(--color-info-light);
+  transition: all 0.2s ease-in;
 }
-.wheader p:hover{
-    box-shadow: none;
+.wheader p:hover {
+  box-shadow: none;
+}
+select {
+  padding: 5px;
+}
+.attendancesub {
+  display: flex;
+  justify-content: center;
+}
+.attendancesub button {
+  height: 40px;
+  width: 80px;
+  border-radius: 5px;
+  box-shadow: var(--box-shadow);
+  color: var(--color-white);
+  background: var(--color-danger);
+}
+.attendancesub button:hover {
+  box-shadow: none;
+}
+select {
+  background: transparent;
+}
+option {
+  background: var(--color-white);
 }

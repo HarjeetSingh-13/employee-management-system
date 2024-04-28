@@ -1,6 +1,6 @@
 import "./App.css";
-import { getPosts } from "./api/api";
-import { useEffect, useState } from "react";
+// import { getPosts } from "./api/api";
+// import { useEffect, useState } from "react";
 
 import AddWorker from "./Pages/AddWorkerp";
 import Home from "./Pages/Homep";
@@ -10,11 +10,25 @@ import UpdateWorker from "./Pages/UpdateWorkerp";
 import UserProfile from "./Pages/UserProfilep";
 import WorkerDetails from "./Pages/WorkerDetailsp";
 import WorkerList from "./Pages/WorkersListp";
+import Loginp from "./Pages/Loginp";
+import Signupp from "./Pages/Signupp";
+
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useParams,
+} from "react-router-dom";
 
 
-
-import { createBrowserRouter, RouterProvider, useParams } from "react-router-dom";
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Loginp />,
+  },
+  {
+    path: "/signup",
+    element: <Signupp />,
+  },
   {
     path: "/home",
     element: <Home />,
@@ -37,7 +51,7 @@ const router = createBrowserRouter([
   //   element: <Task />,
   // },
   {
-    path: "/workerdetails",
+    path: "/workerdetails/:id",
     element: <WorkerDetails />,
   },
   {
@@ -53,7 +67,7 @@ const router = createBrowserRouter([
     element: <UpdateUserProfile />,
   },
   {
-    path: "/updateworker",
+    path: "/updateworker/:id",
     element: <UpdateWorker />,
   },
 ]);

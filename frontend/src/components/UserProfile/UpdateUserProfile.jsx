@@ -1,8 +1,63 @@
 import "../WorkersDetails/WorkersDetails.css";
 import abc from "../../assets/abc.png";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { changePassword, getUser, updateUser } from "../../api/api";
 
 function UserProfile() {
+  const queryClient = useQueryClient();
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+
+  const [updateInfo, setUpdateInfo] = useState({
+    name: "",
+    phone: "",
+  });
+
+  const [changepass, setPassword] = useState({
+    oldPassword: "",
+    password: "",
+  });
+
+  const updateMutate = useMutation({
+    mutationFn: updateUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries(getUser);
+    },
+  });
+  const changePassMutate = useMutation({
+    mutationFn: changePassword,
+    // onSuccess: () => {
+
+    // },
+  });
+  const handleChange = (e) => {
+    setUpdateInfo({
+      ...updateInfo,
+      [e.target.name]: e.target.value,
+    });
+    setPassword({
+      ...changepass,
+      [e.target.name]: e.target.value,
+    })
+  };
+  const handleSubmit = () => {
+    updateMutate.mutate(updateInfo);
+  };
+  const handlePasswordChange = () => {
+    changePassMutate.mutate(changepass);
+    setPassword({
+      oldPassword:"",
+      password:"",
+    })
+  }
+
+  if (isLoading) return "loading...";
+  if (isError) return `error: ${error.message}`;
+
   return (
     <>
       <div className="insights">
@@ -16,18 +71,30 @@ function UserProfile() {
               <form>
                 <p>
                   <label htmlFor="name">Name</label>
-                  <input type="text" name="name" id="name" />
+                  <input
+                    type="text"
+                    onChange={handleChange}
+                    name="name"
+                    id="name"
+                    placeholder={data.name}
+                  />
                 </p>
                 <p>
                   <label htmlFor="phone">Phone Number</label>
-                  <input type="text" name="phone" id="phone" />
+                  <input
+                    type="text"
+                    onChange={handleChange}
+                    name="phone"
+                    id="phone"
+                    placeholder={data.phone}
+                  />
                 </p>
                 <p>
                   <label htmlFor="photo">Profile Photo</label>
                   <input type="file" name="photo" id="photo" />
                 </p>
                 <p>
-                  <button>Update</button>
+                  <button onClick={handleSubmit}>Update</button>
                 </p>
               </form>
               <div className="passwordchange">
@@ -35,19 +102,21 @@ function UserProfile() {
                 <div className="changepass">
                   <input
                     type="password"
-                    name="prevpass"
+                    name="oldPassword"
                     id="prevpass"
+                    onChange={handleChange}
                     placeholder="Previous Password"
                   />
                   <input
                     type="password"
-                    name="newpass"
+                    name="password"
+                    onChange={handleChange}
                     id="newpass"
                     placeholder="New Password"
                   />
                 </div>
                 <p>
-                  <button>Change</button>
+                  <button onClick={handlePasswordChange}>Change</button>
                 </p>
               </div>
             </div>

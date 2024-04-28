@@ -10,7 +10,7 @@ function Homep() {
   };
   return (
     <>
-      <Leftsidebar isClassToggled={isClassToggled}/>
+      <Leftsidebar isClassToggled={isClassToggled} />
       <Dashboard />
       <Rightsidebar toggleClass={toggleClass}/>
     </>

@@ -1,4 +1,4 @@
-import Workers from "../components/Workers/Workers";
+import Attendance from "../components/Workers/Attendance";
 import Leftsidebar from "../components/Leftsidebar/Leftsidebar";
 import Rightsidebar from "../components/Rightsidebar/Rightsidebar";
 
@@ -13,7 +13,7 @@ function Attendancep() {
     <>
       <Leftsidebar isClassToggled={isClassToggled} />
       <div className="attendance">
-        <Workers />
+        <Attendance />
       </div>
       <Rightsidebar toggleClass={toggleClass} />
     </>

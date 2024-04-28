@@ -96,3 +96,20 @@
   width: 30px;
   height: 30px;
 }
+.btns{
+  display: flex;
+}
+.deletebtn{
+  background: var(--color-danger);
+  color: var(--color-white);
+  width: 140px;
+  margin-left: 20px;
+  padding: 5px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+.updateAttendancebtn, .cancelUpdateAttendancebtn{
+  cursor: pointer;
+}

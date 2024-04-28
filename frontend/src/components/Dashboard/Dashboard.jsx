@@ -1,13 +1,24 @@
+import { Link } from "react-router-dom";
 import List from "../List/List";
 import "./Dashboard.css";
+import { getWorkers } from "../../api/api";
+import { useQuery } from "@tanstack/react-query";
 
 function Dashboard() {
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ["workers"],
+    queryFn: getWorkers,
+  });
+  if (isLoading) return "loading...";
+  if (isError) return `error: ${error.message}`;
+  let ndata = data.slice(0, 5);
+  var todayDate = new Date().toLocaleDateString();
   return (
     <main>
       <h1>Dashboard</h1>
 
       <div className="date">
-        <input type="date" name="" id="" />
+        {todayDate}
       </div>
 
       <div className="insights">
@@ -67,7 +78,7 @@ function Dashboard() {
         </div>
       </div>
       <div className="workers">
-        <h2>workers</h2>
+        <h2>Workers</h2>
         <table>
           <thead>
             <tr>
@@ -78,14 +89,24 @@ function Dashboard() {
               <th></th>
             </tr>
           </thead>
-          <List />
-          <List />
-          <List />
-          <List />
-          <List />
+          {ndata.map((data) => (
+            <tbody>
+              <tr>
+                <td>{data._id}</td>
+                <td>{data.name}</td>
+                <td>{data.salary}</td>
+                <td className="warning">Active</td>
+                <td className="primary">
+                  <Link to={`/workerdetails/${data._id}`}>Details</Link>
+                </td>
+              </tr>
+            </tbody>
+          ))}
         </table>
 
-        <a href="#">Show All</a>
+        <a href="#">
+          <Link to={"/workers"}>Show All</Link>
+        </a>
       </div>
     </main>
   );

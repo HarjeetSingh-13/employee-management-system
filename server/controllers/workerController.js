@@ -1,7 +1,5 @@
 const asyncHandler = require("express-async-handler");
 const Worker = require("../models/workerModel.js");
-// const { fileSizeFormatter } = require("../utils/fileUpload");
-// const cloudinary = require("cloudinary").v2;
 
 // Create worker
 const createWorker = asyncHandler(async (req, res) => {
@@ -13,37 +11,13 @@ const createWorker = asyncHandler(async (req, res) => {
     throw new Error("Please fill in all fields");
   }
 
-  // // Handle Image upload
-  // let fileData = {};
-  // if (req.file) {
-  //   // Save image to cloudinary
-  //   let uploadedFile;
-  //   try {
-  //     uploadedFile = await cloudinary.uploader.upload(req.file.path, {
-  //       folder: "Pinvent App",
-  //       resource_type: "image",
-  //     });
-  //   } catch (error) {
-  //     res.status(500);
-  //     throw new Error("Image could not be uploaded");
-  //   }
-
-  //   fileData = {
-  //     fileName: req.file.originalname,
-  //     filePath: uploadedFile.secure_url,
-  //     fileType: req.file.mimetype,
-  //     fileSize: fileSizeFormatter(req.file.size, 2),
-  //   };
-  // }
-
   // Create Worker
   const worker = await Worker.create({
-    employer: req.body.employerId,
+    employer: req.user._id,
     name,
     phoneNumber,
     age,
     salary,
-    attendance: [{ date: "0", status: "not-marked" }],
     // image: fileData,
   });
 
@@ -52,7 +26,7 @@ const createWorker = asyncHandler(async (req, res) => {
 
 // Get all Workers
 const getWorkers = asyncHandler(async (req, res) => {
-  const Workers = await Worker.find({ employer: req.body.employerId }).sort(
+  const Workers = await Worker.find({ employer: req.user._id }).sort(
     "-createdAt"
   );
   res.status(200).json(Workers);
@@ -67,10 +41,11 @@ const getWorker = asyncHandler(async (req, res) => {
     throw new Error("Worker not found");
   }
   // Match Worker to its user
-  if (worker.employer.toString() !== req.body.employerId) {
+  if (worker.employer.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
+  // console.log("worker found");
   res.status(200).json(worker);
 });
 
@@ -83,7 +58,7 @@ const deleteWorker = asyncHandler(async (req, res) => {
     throw new Error("Worker not found");
   }
   // Match Worker to its user
-  if (worker.employer.toString() !== req.body.employerId) {
+  if (worker.employer.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -93,7 +68,7 @@ const deleteWorker = asyncHandler(async (req, res) => {
 
 // Update Worker
 const updateWorker = asyncHandler(async (req, res) => {
-  const { name, phoneNumber, age, salary, description } = req.body;
+  // const { name, phoneNumber, age  } = req.body;
   const { id } = req.params;
 
   const worker = await Worker.findById(id);
@@ -104,52 +79,28 @@ const updateWorker = asyncHandler(async (req, res) => {
     throw new Error("Worker not found");
   }
   // Match Worker to its user
-  if (worker.user.toString() !== req.body.employerId) {
+  if (worker.employer.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
+  if (worker) {
+    const { name, phoneNumber, age } = worker;
+    worker.name = req.body.name || name;
+    worker.phoneNumber = req.body.phoneNumber || phoneNumber;
+    worker.age = req.body.age || age;
+    // console.log(worker.phoneNumber);
 
-  // // Handle Image upload
-  // let fileData = {};
-  // if (req.file) {
-  //   // Save image to cloudinary
-  //   let uploadedFile;
-  //   try {
-  //     uploadedFile = await cloudinary.uploader.upload(req.file.path, {
-  //       folder: "Pinvent App",
-  //       resource_type: "image",
-  //     });
-  //   } catch (error) {
-  //     res.status(500);
-  //     throw new Error("Image could not be uploaded");
-  //   }
-
-  //   fileData = {
-  //     fileName: req.file.originalname,
-  //     filePath: uploadedFile.secure_url,
-  //     fileType: req.file.mimetype,
-  //     fileSize: fileSizeFormatter(req.file.size, 2),
-  // };
-  // }
-
-  // Update Worker
-  const updatedWorker = await Worker.findByIdAndUpdate(
-    { _id: id },
-    {
-      name,
-      phoneNumber,
-      age,
-      salary,
-      description,
-      // image: Object.keys(fileData).length === 0 ? Worker?.image : fileData,
-    },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-
-  res.status(200).json(updatedWorker);
+    const updatedworker = await worker.save();
+    res.status(200).json({
+      _id: updatedworker._id,
+      name: updatedworker.name,
+      phoneNumber: updatedworker.phoneNumber,
+      age: updatedworker.age,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 //mark attendance
@@ -172,6 +123,7 @@ const markAttendance = asyncHandler(async (req, res) => {
   } else {
     worker.attendance.push({ date, status });
   }
+  console.log("marked");
   const result = await worker.save();
   return res.status(200).json(result);
 });
@@ -186,16 +138,9 @@ const updateAttendance = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Worker not found");
   }
-  // const existingAttendance = worker.attendance.find(
-  //   (a) => a.date.toDateString() === new Date(date).toDateString()
-  // );
   const existingAttendance = worker.attendance.find((a) => a.date == date);
-  if (existingAttendance) {
-    // res.status(401).json("attendance already marked");
-    existingAttendance.status = status;
-  } else {
-    worker.attendance.push({ date, status });
-  }
+  existingAttendance.status = status;
+
   const result = await worker.save();
   return res.status(200).json(result);
 });
@@ -210,46 +155,38 @@ const getAttendance = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Worker not found");
   }
-  // const existingAttendance = worker.attendance.find(
-  //   (a) => a.date.toDateString() === new Date(date).toDateString()
-  // );
-  // const existingAttendance = worker.attendance.find((a) => a.date == date);
-  // if (existingAttendance) {
-    // res.status(401).json("attendance already marked");
-  //   existingAttendance.status = status;
-  // } else {
-  //   worker.attendance.push({ date, status });
-  // }
-  // const result = await worker.save();
   return res.status(200).json(worker.attendance);
 });
 
 //get attendance by date
-const getAttendanceD = asyncHandler(async (req,res) => {
+const getAttendanceD = asyncHandler(async (req, res) => {
   const worker = await Worker.findById(req.body.id);
-  if(!worker) {
+  if (!worker) {
     res.status(404);
     throw new Error("Worker not found");
   }
-  const attendance = worker.attendance.find((a)=> a.date === req.params.date);
-  if(attendance){
-    res.status(200).json(attendance)
-  }else{
+  const attendance = worker.attendance.find((a) => a.date === req.params.date);
+  if (attendance) {
+    res.status(200).json(attendance);
+  } else {
     res.status(404);
     throw new Error("Attendance on give date not found");
   }
-})
+});
 
-const finance = asyncHandler(async (req,res) => {
+const finance = asyncHandler(async (req, res) => {
   const worker = await Worker.findById(req.params.id);
-  if(!worker){
+  if (!worker) {
     res.status(400);
     throw new Error("Worker not found");
   }
-  const workingdays = worker.attendance.reduce((count, attendance) => count + (attendance.status === "present"), 0);
-  const salary = (worker.salary * workingdays) - worker.loan
-  res.json({workingdays,salary});
-})
+  const workingdays = worker.attendance.reduce(
+    (count, attendance) => count + (attendance.status === "present"),
+    0
+  );
+  const salary = worker.salary * workingdays - worker.loan;
+  res.json({ workingdays, salary });
+});
 
 module.exports = {
   createWorker,

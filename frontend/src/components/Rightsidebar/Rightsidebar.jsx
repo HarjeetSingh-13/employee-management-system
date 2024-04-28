@@ -1,7 +1,17 @@
 import "./Rightsidebar.css";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "../../api/api";
 
 function Rightsidebar({ toggleClass }) {
+
+  const {isLoading, isError, data, error} = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  })
+  if(isLoading) return 'loading...';
+  if(isError) return `error: ${error.message}`
+
   const handleClick = () => {
     toggleClass();
   };
@@ -35,8 +45,7 @@ function Rightsidebar({ toggleClass }) {
         <div className="profile">
           <div className="info">
             <p>Hey,</p>
-            <b>abcdef</b>
-            <small className="text-muted">Admin</small>
+            <b>{data.name}</b>
           </div>
           <Link to={"/userprofile"}>
           <div className="profile-photo">

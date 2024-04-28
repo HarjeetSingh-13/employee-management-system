@@ -24,6 +24,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://127.0.0.1:5500/Project/reactapp/frontend/test.html",
+      "http://localhost:5173",
     ],
     credentials: true,
   })
@@ -35,8 +36,6 @@ app.use(
 app.use("/api/employers", employerRoute);
 app.use("/api/workers", workerRoute);
 app.use("/api/workers", attendanceRoute);
-// app.use("/api/tasks", taskRoute);
-// app.use("/api/attendance", attendanceRoute);
 
 // Routes
 app.get("/", (req, res) => {

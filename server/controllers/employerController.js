@@ -66,6 +66,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 // Login User
 const loginUser = asyncHandler(async (req, res) => {
+  // console.log(req.body);
   const { email, password } = req.body;
 
   // Validate Request
@@ -108,13 +109,7 @@ const loginUser = asyncHandler(async (req, res) => {
     //   phone,
     //   token,
     // });
-    res.send(`    <form action="http://localhost:5000/api/workers/createWorker" method="POST">
-    <input type="text" name="name" />
-    <input type="number" name="phoneNumber" />
-    <input type="number" name="age" />
-    <input type="number" name="salary" />
-    <button>send</button>
-  </form>`);
+    res.send("logged in successfully");
   } else {
     res.status(400);
     throw new Error("Invalid email or password");

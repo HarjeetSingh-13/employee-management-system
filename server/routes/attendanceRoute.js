@@ -4,10 +4,10 @@ const protect = require("../middleWare/authMiddleware");
 const { markAttendance, updateAttendance, getAttendance, getAttendanceD } = require("../controllers/workerController");
 
 // router.post("/check", protect, check);
-router.post("/mark", protect, markAttendance);
+router.post("/markAttendance", protect, markAttendance);
 router.get("/getAttendance", protect, getAttendance);
 // router.get("/getByWorker/:id", protect, getWorkerAttendance);
 router.get("/getAttendanceByDate/:date", protect, getAttendanceD);
-router.patch("/update", protect, updateAttendance);
+router.patch("/updateAttendance", protect, updateAttendance);
 
 module.exports = router;

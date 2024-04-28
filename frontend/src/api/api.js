@@ -1,6 +1,98 @@
-export const getPosts = async () => {
-  const response = await fetch("http://127.0.0.1:8000/posts", {
-    method: "GET",
-  });
-  return await response.json();
+import axios from "axios";
+
+const serverApi = axios.create({
+  baseURL: "http://localhost:5000/api",
+  withCredentials: true,
+});
+
+export const login = async (loginInfo) => {
+  const requestBody = { email: loginInfo.email, password: loginInfo.password };
+  const response = await serverApi.post("/employers/login", requestBody);
+  console.log(response);
+};
+
+export const register = async (signupinfo) => {
+  const requestBody = {
+    name: signupinfo.name,
+    email: signupinfo.email,
+    password: signupinfo.password,
+  };
+  console.log(requestBody);
+  return await serverApi.post("/employers/register", requestBody);
+};
+
+export const getUser = async () => {
+  const response = await serverApi.get("/employers/getUser");
+  return response.data;
+};
+
+export const updateUser = async (updateInfo) => {
+  const requestBody = { name: updateInfo.name, phone: updateInfo.phone };
+  const response = await serverApi.patch("/employers/updateUser", requestBody);
+  return response.data;
+};
+
+export const changePassword = async (changepass) => {
+  const requestBody = {
+    oldPassword: changepass.oldPassword,
+    password: changepass.password,
+  };
+  return await serverApi.patch("/employers/changePassword", requestBody);
+};
+
+export const logout = async () => {
+  const response = await serverApi.get("/employers/logout");
+  return response;
+};
+
+export const getWorkers = async () => {
+  const response = await serverApi.get("/workers/getWorker");
+  return response.data;
+};
+
+export const getWorker = async (id) => {
+  const response = await serverApi.get(`/workers/getWorker/${id.queryKey[1]}`);
+  return response.data;
+};
+
+export const createWorker = async (worker) => {
+  const requestBody = {
+    name: worker.name,
+    phoneNumber: worker.phoneNumber,
+    age: worker.age,
+    salary: worker.salary,
+  };
+  const response = await serverApi.post("/workers/createWorker", requestBody);
+  return response.data;
+};
+
+export const updateWorker = async (updateInfo) => {
+  const requestBody = {
+    name: updateInfo.name,
+    phoneNumber: updateInfo.phoneNumber,
+    age: updateInfo.age,
+  };
+  const response = await serverApi.patch(
+    `/workers/updateWorker/${updateInfo.id}`,
+    requestBody
+  );
+  return response.data;
+};
+
+export const deleteWorker = async (id) => {
+  console.log(id);
+  const response = await serverApi.delete(`/workers/deleteWorker/${id}`);
+  return response.data;
+};
+
+export const markAttendance = async (worker) => {
+  // console.log(worker);
+  const response = await serverApi.post(`/workers/markAttendance`, worker);
+  return response.data;
+};
+
+export const updateAttendance = async (worker) => {
+  // console.log(worker);
+  const response = await serverApi.patch(`/workers/updateAttendance`, worker);
+  return response.data;
 };

@@ -1,8 +1,17 @@
 import "../WorkersDetails/WorkersDetails.css";
 import abc from "../../assets/abc.png";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "../../api/api";
 
 function UserProfile() {
+  const {isLoading, isError, data, error} = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  })
+  if(isLoading) return 'loading...';
+  if(isError) return `error: ${error.message}`
+  if(data) console.log(data);
   return (
     <>
       <div className="insights">
@@ -13,10 +22,10 @@ function UserProfile() {
                 <img src={abc} alt="Profile" className="profile-image" />
               </div>
               <div className="info-container">
-                <h3>Workers Information</h3>
-                <p>John Doe</p>
-                <p>john.doe@example.com</p>
-                <p>Phone: 123-456-7890</p>
+                <h3>Employer's Information</h3>
+                <p>{data.name}</p>
+                <p>{data.email}</p>
+                <p>{data.phone}</p>
                 <Link to={"/updateuser"}>
                   <button>Update</button>
                 </Link>
