@@ -2,15 +2,15 @@ import "./Rightsidebar.css";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "../../api/api";
+import miketyson from "../../assets/miketyson.png"
 
 function Rightsidebar({ toggleClass }) {
-
-  const {isLoading, isError, data, error} = useQuery({
+  const { isLoading, isError, data, error } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
-  })
-  if(isLoading) return 'loading...';
-  if(isError) return `error: ${error.message}`
+  });
+  if (isLoading) return "loading...";
+  if (isError) return `error: ${error.message}`;
 
   const handleClick = () => {
     toggleClass();
@@ -48,9 +48,9 @@ function Rightsidebar({ toggleClass }) {
             <b>{data.name}</b>
           </div>
           <Link to={"/userprofile"}>
-          <div className="profile-photo">
-            <img src="" alt="profilepic" />
-          </div>
+            <div className="profile-photo">
+              <img src={data.photo} alt="profilepic" />
+            </div>
           </Link>
         </div>
       </div>
@@ -60,7 +60,7 @@ function Rightsidebar({ toggleClass }) {
         <div className="updates">
           <div className="update">
             <div className="profile-photo">
-              <img src="" alt="pp" />
+              <img src={miketyson} alt="pp" />
             </div>
             <div className="message">
               <p>
@@ -72,7 +72,7 @@ function Rightsidebar({ toggleClass }) {
           </div>
           <div className="update">
             <div className="profile-photo">
-              <img src="" alt="pp" />
+              <img src={miketyson} alt="pp" />
             </div>
             <div className="message">
               <p>
@@ -84,7 +84,7 @@ function Rightsidebar({ toggleClass }) {
           </div>
           <div className="update">
             <div className="profile-photo">
-              <img src="" alt="pp" />
+              <img src={miketyson} alt="pp" />
             </div>
             <div className="message">
               <p>
@@ -132,12 +132,14 @@ function Rightsidebar({ toggleClass }) {
             <h3>3849</h3>
           </div>
         </div>
-        <div className="item add-Workers">
-          <div>
-            <span className="material-symbols-outlined"> add </span>
-            <h3>App Workers</h3>
+        <Link to={"/addworker"}>
+          <div className="item add-Workers">
+            <div>
+              <span className="material-symbols-outlined"> add </span>
+              <h3>App Workers</h3>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );

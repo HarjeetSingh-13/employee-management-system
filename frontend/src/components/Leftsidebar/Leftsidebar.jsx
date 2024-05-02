@@ -1,10 +1,9 @@
-import { useState } from "react";
 import "./Leftsidebar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../api/api";
 import { useMutation } from "@tanstack/react-query";
-
-function Leftsidebar({ isClassToggled }) {
+import logo from "../../assets/logo.png";
+function Leftsidebar({ isClassToggled, activePage }) {
   const navigate = useNavigate();
   const logoutMutate = useMutation({
     mutationFn: logout,
@@ -14,7 +13,6 @@ function Leftsidebar({ isClassToggled }) {
     navigate("/");
   };
 
-  const [isactive, setActive] = useState();
   const sidemenu = document.querySelector("aside");
   const hideLeftPanel = () => {
     sidemenu.style.display = "none";
@@ -27,7 +25,7 @@ function Leftsidebar({ isClassToggled }) {
       <aside>
         <div className="top">
           <div className="logo">
-            <img src="" alt="logo" />
+            <img src={logo} alt="logo"/>
             <h2>
               Worker<span className="danger">Connect</span>
             </h2>
@@ -42,32 +40,25 @@ function Leftsidebar({ isClassToggled }) {
         <div className="sidebar">
           <Link
             to={"/home"}
-            onClick={() => setActive("1")}
-            className={isactive === "1" ? "active" : ""}
+            className={activePage === "dashboard" ? "active" : ""}
           >
             <span className="material-symbols-outlined"> grid_view </span>
             <h3>Dashboard</h3>
           </Link>
           <Link
             to={"/attendance"}
-            onClick={() => setActive("2")}
-            className={isactive === "2" ? "active" : ""}
+            className={activePage === "attendance" ? "active" : ""}
           >
             <span className="material-symbols-outlined"> person_apron </span>
             <h3>Attendance</h3>
           </Link>
           <Link
             to={"/workers"}
-            onClick={() => setActive("3")}
-            className={isactive === "3" ? "active" : ""}
+            className={activePage === "workers" ? "active" : ""}
           >
             <span className="material-symbols-outlined"> grid_view </span>
             <h3>Workers</h3>
           </Link>
-          {/* <Link href="#">
-            <span className="material-symbols-outlined"> grid_view </span>
-            <h3>Tasks</h3>
-          </Link> */}
           <a onClick={logoutHandle}>
             <span className="material-symbols-outlined"> logout </span>
             <h3>Logout</h3>

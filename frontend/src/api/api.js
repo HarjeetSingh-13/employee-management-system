@@ -27,7 +27,11 @@ export const getUser = async () => {
 };
 
 export const updateUser = async (updateInfo) => {
-  const requestBody = { name: updateInfo.name, phone: updateInfo.phone };
+  const requestBody = {
+    name: updateInfo.name,
+    phone: updateInfo.phone,
+    photo: updateInfo.photo,
+  };
   const response = await serverApi.patch("/employers/updateUser", requestBody);
   return response.data;
 };
@@ -60,7 +64,8 @@ export const createWorker = async (worker) => {
     name: worker.name,
     phoneNumber: worker.phoneNumber,
     age: worker.age,
-    salary: worker.salary,
+    payRate: worker.salary,
+    photo: worker.photo,
   };
   const response = await serverApi.post("/workers/createWorker", requestBody);
   return response.data;
@@ -71,6 +76,7 @@ export const updateWorker = async (updateInfo) => {
     name: updateInfo.name,
     phoneNumber: updateInfo.phoneNumber,
     age: updateInfo.age,
+    photo: updateInfo.photo,
   };
   const response = await serverApi.patch(
     `/workers/updateWorker/${updateInfo.id}`,
@@ -94,5 +100,44 @@ export const markAttendance = async (worker) => {
 export const updateAttendance = async (worker) => {
   // console.log(worker);
   const response = await serverApi.patch(`/workers/updateAttendance`, worker);
+  return response.data;
+};
+
+export const financialDetails = async (id) => {
+  const response = await serverApi.get(`/workers/getFinance/${id.queryKey[1]}`);
+  return response.data;
+};
+
+export const addloan = async (loan) => {
+  const requestBody = {
+    amount: loan.amount,
+    reason: loan.reason,
+    date: loan.date,
+  };
+  console.log(requestBody, loan);
+  const response = await serverApi.post(
+    `/workers/addloan/${loan.id}`,
+    requestBody
+  );
+  return response.data;
+};
+
+export const paySalary = async (paymentInfo) => {
+  const requestBody = {
+    amount: paymentInfo.amount,
+    netSalary: paymentInfo.netSalary,
+  };
+  console.log(requestBody);
+  const response = await serverApi.post(
+    `/workers/paysalary/${paymentInfo.id}`,
+    requestBody
+  );
+  console.log(response.data);
+  return response.data;
+};
+
+export const getDashboardInfo = async () => {
+  const response = await serverApi.get("/workers/getdashboardinfo");
+  console.log(response.data);
   return response.data;
 };

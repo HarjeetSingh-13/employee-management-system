@@ -1,8 +1,6 @@
 import "./App.css";
-// import { getPosts } from "./api/api";
-// import { useEffect, useState } from "react";
-
 import AddWorker from "./Pages/AddWorkerp";
+import Loan from "./Pages/Loanp";
 import Home from "./Pages/Homep";
 import Attendance from "./Pages/Attendancep";
 import UpdateUserProfile from "./Pages/UpdateUserProfilep";
@@ -12,6 +10,8 @@ import WorkerDetails from "./Pages/WorkerDetailsp";
 import WorkerList from "./Pages/WorkersListp";
 import Loginp from "./Pages/Loginp";
 import Signupp from "./Pages/Signupp";
+import FinancialDetails from "./Pages/FinancialDetailsp";
+import PaySalary from "./Pages/PaySalaryp";
 
 import {
   createBrowserRouter,
@@ -32,12 +32,7 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />,
-    // errorElement: <ErrorPage />,
   },
-  // {
-  //   path: "/loginsignup",
-  //   element: <LoginSignup />,
-  // },
   {
     path: "/workers",
     element: <WorkerList />,
@@ -46,10 +41,6 @@ const router = createBrowserRouter([
     path: "/addworker",
     element: <AddWorker />,
   },
-  // {
-  //   path: "/tasks",
-  //   element: <Task />,
-  // },
   {
     path: "/workerdetails/:id",
     element: <WorkerDetails />,
@@ -70,15 +61,21 @@ const router = createBrowserRouter([
     path: "/updateworker/:id",
     element: <UpdateWorker />,
   },
+  {
+    path: "/financialdetails/:id",
+    element: <FinancialDetails />,
+  },
+  {
+    path: "/addloan/:id",
+    element: <Loan />,
+  },
+  {
+    path: "/paysalary/:id",
+    element: <PaySalary />,
+  },
 ]);
 
 function App() {
-  // const [data, setData] = useState(null);
-
-  // useEffect(()=>{
-  //   getPosts().then((posts)=>setData(posts));
-  // },[]);
-  // {/* {data ? data.map((e) => <li>{e.name}</li>) : <p>data not found</p>} */}
   const params = useParams();
   console.log(params);
   return (

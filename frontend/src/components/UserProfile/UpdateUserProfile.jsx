@@ -1,12 +1,14 @@
 import "../WorkersDetails/WorkersDetails.css";
-import abc from "../../assets/abc.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { changePassword, getUser, updateUser } from "../../api/api";
+import upload from "../../upload.js";
 
 function UserProfile() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [image, setImage] = useState("");
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
@@ -15,6 +17,7 @@ function UserProfile() {
   const [updateInfo, setUpdateInfo] = useState({
     name: "",
     phone: "",
+    photo: "",
   });
 
   const [changepass, setPassword] = useState({
@@ -30,9 +33,9 @@ function UserProfile() {
   });
   const changePassMutate = useMutation({
     mutationFn: changePassword,
-    // onSuccess: () => {
-
-    // },
+    onSuccess: () => {
+      navigate("/userprofile")
+    },
   });
   const handleChange = (e) => {
     setUpdateInfo({
@@ -44,10 +47,19 @@ function UserProfile() {
       [e.target.name]: e.target.value,
     })
   };
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // updateMutate.mutate(updateInfo);
+    if (image) {
+      const photo = await upload(image);
+      updateInfo.photo = photo;
+    }
+    console.log(updateInfo)
     updateMutate.mutate(updateInfo);
+
   };
-  const handlePasswordChange = () => {
+  const handlePasswordChange = (e) => {
+    // e.preventDefault();
     changePassMutate.mutate(changepass);
     setPassword({
       oldPassword:"",
@@ -64,7 +76,7 @@ function UserProfile() {
         <div className="middle">
           <div className="winfo">
             <div className="profile-container">
-              <img src={abc} alt="Profile" className="profile-image" />
+              <img src={data.photo} alt="Profile" className="profile-image" />
             </div>
             <div className="info-container">
               <h3>Update Profile</h3>
@@ -91,7 +103,7 @@ function UserProfile() {
                 </p>
                 <p>
                   <label htmlFor="photo">Profile Photo</label>
-                  <input type="file" name="photo" id="photo" />
+                  <input type="file" name="photo" id="photo"  onChange={(e) => setImage(e.target.files[0])} />
                 </p>
                 <p>
                   <button onClick={handleSubmit}>Update</button>

@@ -11,7 +11,7 @@ function WorkerDetailsp() {
   };
   return (
     <>
-      <Leftsidebar isClassToggled={isClassToggled}/>
+      <Leftsidebar isClassToggled={isClassToggled} activePage={"workers"}/>
       <WorkersDetails />
       <Rightsidebar toggleClass={toggleClass}/>
     </>

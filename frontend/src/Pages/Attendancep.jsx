@@ -11,7 +11,7 @@ function Attendancep() {
   };
   return (
     <>
-      <Leftsidebar isClassToggled={isClassToggled} />
+      <Leftsidebar isClassToggled={isClassToggled} activePage={"attendance"}/>
       <div className="attendance">
         <Attendance />
       </div>

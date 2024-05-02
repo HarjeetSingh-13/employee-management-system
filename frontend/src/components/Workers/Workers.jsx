@@ -33,8 +33,7 @@ function Workers() {
                 <tr>
                   <th>Worker ID</th>
                   <th>Worker Name</th>
-                  <th>Salary</th>
-                  <th>Status</th>
+                  <th>Pay Rate</th>
                   <th></th>
                 </tr>
               </thead>
@@ -43,8 +42,7 @@ function Workers() {
                   <tr>
                     <td>{data._id}</td>
                     <td>{data.name}</td>
-                    <td>{data.salary}</td>
-                    <td className="warning">Active</td>
+                    <td className="warning">{data.payRate}</td>
                     <td className="primary">
                       <Link to={`/workerdetails/${data._id}`}>Details</Link>
                     </td>

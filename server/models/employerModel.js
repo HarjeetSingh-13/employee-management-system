@@ -32,6 +32,19 @@ const employerSchema = mongoose.Schema(
       type: String,
       default: "+91",
     },
+    totalPay: {
+      type: Number,
+      default: 0,
+    },
+    totalLoan: {
+      type: Number,
+      default: 0,
+    },
+    attendance: [{
+      date: {
+          type: String,
+      },
+  }]
   },
   {
     timestamps: true,

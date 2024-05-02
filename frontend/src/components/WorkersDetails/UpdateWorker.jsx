@@ -1,15 +1,16 @@
 import "./WorkersDetails.css";
-import abc from "../../assets/abc.png";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorker, updateWorker } from "../../api/api";
 import { useState } from "react";
+import upload from "../../upload.js";
 
 function WorkersDetails() {
   const queryClient = useQueryClient();
   const params = useParams();
   const id = params.id;
+  const [image, setImage] = useState("");
 
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["workers", id],
@@ -21,13 +22,14 @@ function WorkersDetails() {
     phoneNumber: "",
     age: "",
     id: id,
+    photo: "",
   });
 
   const updateMutate = useMutation({
     mutationFn: updateWorker,
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries(workers);
-    // },
+    onSuccess: () => {
+      queryClient.invalidateQueries(workers);
+    },
   });
   const handleChange = (e) => {
     setUpdateInfo({
@@ -35,8 +37,14 @@ function WorkersDetails() {
       [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit = (e) => {
-    // e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // updateMutate.mutate(updateInfo);
+    if (image) {
+      const photo = await upload(image);
+      updateInfo.photo = photo;
+    }
+    console.log(updateInfo)
     updateMutate.mutate(updateInfo);
   };
 
@@ -48,7 +56,7 @@ function WorkersDetails() {
         <div className="middle">
           <div className="winfo">
             <div className="profile-container">
-              <img src={abc} alt="Profile" className="profile-image" />
+              <img src={data.photo} alt="Profile" className="profile-image" />
             </div>
             <div className="info-container">
               <h3>Update Profile</h3>
@@ -65,13 +73,9 @@ function WorkersDetails() {
                   <label htmlFor="phone">Age</label>
                   <input type="text" name="age" id="age" onChange={handleChange} placeholder={data.age}/>
                 </p>
-                {/* <p>
-                  <label htmlFor="phone">Salary</label>
-                  <input type="text" name="phone" id="phone" />
-                </p> */}
                 <p>
                   <label htmlFor="photo">Profile Photo</label>
-                  <input type="file" name="photo" id="photo" />
+                  <input type="file" name="photo" id="photo" onChange={(e) => setImage(e.target.files[0])} />
                 </p>
                 <p>
                   <button onClick={handleSubmit}>Update</button>

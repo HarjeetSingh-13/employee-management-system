@@ -11,7 +11,7 @@ function UpdateUserProfilep() {
   };
   return (
     <>
-      <Leftsidebar isClassToggled={isClassToggled} />
+      <Leftsidebar isClassToggled={isClassToggled} activePage={"dashboard"}/>
       <UpdateUserProfile />
       <Rightsidebar toggleClass={toggleClass} />
     </>

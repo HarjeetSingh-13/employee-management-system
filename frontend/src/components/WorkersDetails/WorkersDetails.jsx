@@ -1,5 +1,4 @@
 import "./WorkersDetails.css";
-import abc from "../../assets/abc.png";
 import { Link, useNavigate } from "react-router-dom";
 import { deleteWorker, getWorker, updateAttendance } from "../../api/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -53,24 +52,30 @@ function WorkersDetails() {
   };
   if (isLoading) return "loading...";
   if (isError) return `error: ${error.message}`;
-  // if (data) console.log(data);
+  if (typeof data.attendance === "undefined") return "loading...";
   return (
     <>
       <div className="insights">
         <div className="middle">
           <div className="winfo">
             <div className="profile-container">
-              <img src={abc} alt="Profile" className="profile-image" />
+              <img src={data.photo} alt="Profile" className="profile-image" />
             </div>
             <div className="info-container">
               <h3>Workers Information</h3>
               <p>{data.name}</p>
               <p>Phone Number: {data.phoneNumber}</p>
               <p>Age: {data.age}</p>
-              <p>Salary: {data.salary}</p>
+              <p>Pay Rate: {data.payRate}</p>
               <p className="btns">
                 <Link to={`/updateworker/${id}`}>
                   <button>Update</button>
+                </Link>
+                <Link to={`/financialdetails/${id}`}>
+                  <button>Financial Details</button>
+                </Link>
+                <Link to={`/addloan/${id}`}>
+                  <button>Add Loan</button>
                 </Link>
                 <p className="deletebtn" onClick={handleDelete}>
                   Remove Worker
@@ -95,7 +100,22 @@ function WorkersDetails() {
                 <th>
                   {updatePanel === false ? "Attendance" : "Set Attendance"}
                 </th>
-                <th></th>
+                  <th
+                    className="primary updateAttendancebtn"
+                    onClick={(event) => handlePanel(event, data.date)}
+                  >
+                    Update
+                  </th>
+                  {updatePanel === false ? (
+                    <></>
+                  ) : (
+                    <th
+                      className="danger cancelUpdateAttendancebtn"
+                      onClick={closePanel}
+                    >
+                      Cancel
+                    </th>
+                  )}
               </tr>
             </thead>
             {data.attendance.map((data) => (
@@ -123,22 +143,6 @@ function WorkersDetails() {
                       </select>
                     )}
                   </td>
-                  <td
-                    className="primary updateAttendancebtn"
-                    onClick={(event) => handlePanel(event, data.date)}
-                  >
-                    Update
-                  </td>
-                  {updatePanel === false ? (
-                    <></>
-                  ) : (
-                    <td
-                      className="danger cancelUpdateAttendancebtn"
-                      onClick={closePanel}
-                    >
-                      Cancel
-                    </td>
-                  )}
                 </tr>
               </tbody>
             ))}

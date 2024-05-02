@@ -11,7 +11,7 @@ function WorkerListp() {
   };
   return (
     <>
-      <Leftsidebar isClassToggled={isClassToggled} />
+      <Leftsidebar isClassToggled={isClassToggled} activePage={"workers"}/>
       <Workers />
       <Rightsidebar toggleClass={toggleClass} />
     </>

@@ -11,7 +11,7 @@ function AddWorkerp() {
   };
   return (
     <>
-      <Leftsidebar isClassToggled={isClassToggled} />
+      <Leftsidebar isClassToggled={isClassToggled} activePage={"workers"}/>
       <AddWorker />
       <Rightsidebar toggleClass={toggleClass} />
     </>

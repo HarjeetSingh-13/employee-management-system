@@ -1,20 +1,20 @@
 import Leftsidebar from "../components/Leftsidebar/Leftsidebar";
 import Rightsidebar from "../components/Rightsidebar/Rightsidebar";
-import UserProfile from "../components/UserProfile/UserProfile";
 
 import { useState } from "react";
+import PaySalary from "../components/WorkersDetails/PaySalary";
 
-function UserProfilep() {
+function PaySalaryp() {
   const [isClassToggled, setIsClassToggled] = useState(false);
   const toggleClass = () => {
     setIsClassToggled(!isClassToggled);
   };
   return (
     <>
-      <Leftsidebar isClassToggled={isClassToggled} activePage={"dashboard"}/>
-      <UserProfile />
+      <Leftsidebar isClassToggled={isClassToggled} activePage={"workers"}/>
+      <PaySalary />
       <Rightsidebar toggleClass={toggleClass} />
     </>
   );
 }
-export default UserProfilep;
+export default PaySalaryp;

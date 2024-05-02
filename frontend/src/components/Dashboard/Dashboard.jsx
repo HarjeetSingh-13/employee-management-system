@@ -1,25 +1,43 @@
 import { Link } from "react-router-dom";
-import List from "../List/List";
 import "./Dashboard.css";
-import { getWorkers } from "../../api/api";
+import { getDashboardInfo, getWorkers } from "../../api/api";
 import { useQuery } from "@tanstack/react-query";
 
 function Dashboard() {
-  const { isLoading, isError, data, error } = useQuery({
+  const {
+    isLoading: workersLoading,
+    isError: workersError,
+    data: data,
+    error: workersErrorObj,
+  } = useQuery({
     queryKey: ["workers"],
     queryFn: getWorkers,
   });
-  if (isLoading) return "loading...";
-  if (isError) return `error: ${error.message}`;
+
+  const {
+    isLoading: dashboardLoading,
+    isError: dashboardError,
+    data: dashboard,
+    error: dashboardErrorObj,
+  } = useQuery({
+    queryKey: ["dashboardinfo"],
+    queryFn: getDashboardInfo,
+  });
+
+  if (workersLoading || dashboardLoading) return "loading...";
+  if (workersError || dashboardError)
+    return `error: ${
+      workersError ? workersErrorObj.message : dashboardErrorObj.message
+    }`;
+
   let ndata = data.slice(0, 5);
   var todayDate = new Date().toLocaleDateString();
+  if (typeof dashboard === "undefined") return "loading...";
   return (
     <main>
       <h1>Dashboard</h1>
 
-      <div className="date">
-        {todayDate}
-      </div>
+      <div className="date">{todayDate}</div>
 
       <div className="insights">
         <div className="attendance">
@@ -27,7 +45,7 @@ function Dashboard() {
           <div className="middle">
             <div className="left">
               <h3>Attendance</h3>
-              <h1>Marked</h1>
+              <h1>{dashboard.attendance ? "Marked" : "Not Marked"}</h1>
             </div>
             <div className="progress">
               <svg>
@@ -44,8 +62,8 @@ function Dashboard() {
           <span className="material-symbols-outlined"> analytics </span>
           <div className="middle">
             <div className="left">
-              <h3>Total Salary</h3>
-              <h1>132476</h1>
+              <h3>Total Remaining Salary</h3>
+              <h1>{dashboard.totalRemainingPayment}</h1>
             </div>
             <div className="progress">
               <svg>
@@ -63,7 +81,7 @@ function Dashboard() {
           <div className="middle">
             <div className="left">
               <h3>Total Loan</h3>
-              <h1>132476</h1>
+              <h1>{dashboard.totalLoan}</h1>
             </div>
             <div className="progress">
               <svg>
@@ -84,8 +102,7 @@ function Dashboard() {
             <tr>
               <th>Worker ID</th>
               <th>Worker Name</th>
-              <th>Salary</th>
-              <th>Status</th>
+              <th>Pay Rate</th>
               <th></th>
             </tr>
           </thead>
@@ -94,8 +111,7 @@ function Dashboard() {
               <tr>
                 <td>{data._id}</td>
                 <td>{data.name}</td>
-                <td>{data.salary}</td>
-                <td className="warning">Active</td>
+                <td className="warning">{data.payRate}</td>
                 <td className="primary">
                   <Link to={`/workerdetails/${data._id}`}>Details</Link>
                 </td>

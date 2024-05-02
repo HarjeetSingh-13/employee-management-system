@@ -1,5 +1,4 @@
 import "../WorkersDetails/WorkersDetails.css";
-import abc from "../../assets/abc.png";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "../../api/api";
@@ -19,7 +18,7 @@ function UserProfile() {
           <>
             <div className="winfo">
               <div className="profile-container">
-                <img src={abc} alt="Profile" className="profile-image" />
+                <img src={data.photo} alt="Profile" className="profile-image" />
               </div>
               <div className="info-container">
                 <h3>Employer's Information</h3>

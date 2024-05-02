@@ -19,28 +19,38 @@ const workerSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    salary: {
+    payRate: {
       type: Number,
       required: true,
     },
-    loan: {
+    prevRemainingSalary: {
       type: Number,
       default: 0,
     },
-    // photo: {
-    //     type: String,
-    //     required: [true, "Please add a photo"],
-    //     default: "https://i.ibb.co/4pDNDk1/avatar.png",
-    //   },
+    loan: [{
+      date: {
+        type: String,
+      },
+      reason: {
+        type: String,
+      },
+      amount: {
+        type: Number,
+      }
+    }],
+    photo: {
+        type: String,
+        required: [true, "Please add a photo"],
+        default: "https://i.ibb.co/4pDNDk1/avatar.png",
+      },
     attendance: [{
       date: {
           type: String,
-          // required: true
       },
       status: {
           type: String,
           enum: ['present', 'absent', 'not-marked'],
-          // required: true
+          default: 'not-marked',
       },
   }]
   },

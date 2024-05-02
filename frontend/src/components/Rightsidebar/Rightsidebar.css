@@ -48,6 +48,10 @@
 .right .announcements h2 {
   margin-bottom: 0.8rem;
 }
+.profile-photo img{
+  height: 2.8rem;
+  aspect-ratio: 1;
+}
 .right .announcements .updates {
   background: var(--color-white);
   padding: var(--card-padding);
