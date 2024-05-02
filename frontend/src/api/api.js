@@ -9,7 +9,7 @@ const serverApi = axios.create({
 export const login = async (loginInfo) => {
   const requestBody = { email: loginInfo.email, password: loginInfo.password };
   const response = await serverApi.post("/employers/login", requestBody);
-  console.log(response);
+  return response.data;
 };
 
 export const register = async (signupinfo) => {
@@ -18,7 +18,6 @@ export const register = async (signupinfo) => {
     email: signupinfo.email,
     password: signupinfo.password,
   };
-  console.log(requestBody);
   return await serverApi.post("/employers/register", requestBody);
 };
 
@@ -87,7 +86,6 @@ export const updateWorker = async (updateInfo) => {
 };
 
 export const deleteWorker = async (id) => {
-  console.log(id);
   const response = await serverApi.delete(`/workers/deleteWorker/${id}`);
   return response.data;
 };
@@ -115,7 +113,6 @@ export const addloan = async (loan) => {
     reason: loan.reason,
     date: loan.date,
   };
-  console.log(requestBody, loan);
   const response = await serverApi.post(
     `/workers/addloan/${loan.id}`,
     requestBody
@@ -128,17 +125,14 @@ export const paySalary = async (paymentInfo) => {
     amount: paymentInfo.amount,
     netSalary: paymentInfo.netSalary,
   };
-  console.log(requestBody);
   const response = await serverApi.post(
     `/workers/paysalary/${paymentInfo.id}`,
     requestBody
   );
-  console.log(response.data);
   return response.data;
 };
 
 export const getDashboardInfo = async () => {
   const response = await serverApi.get("/workers/getdashboardinfo");
-  console.log(response.data);
   return response.data;
 };

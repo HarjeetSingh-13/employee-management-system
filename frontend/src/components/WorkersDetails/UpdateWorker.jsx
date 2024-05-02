@@ -1,5 +1,5 @@
 import "./WorkersDetails.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getWorker, updateWorker } from "../../api/api";
@@ -7,7 +7,7 @@ import { useState } from "react";
 import upload from "../../upload.js";
 
 function WorkersDetails() {
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const params = useParams();
   const id = params.id;
   const [image, setImage] = useState("");
@@ -25,10 +25,13 @@ function WorkersDetails() {
     photo: "",
   });
 
+  
+
   const updateMutate = useMutation({
     mutationFn: updateWorker,
     onSuccess: () => {
-      queryClient.invalidateQueries(workers);
+      alert("worker info updated successfully!");
+      navigate(`/workerdetails/${id}`);
     },
   });
   const handleChange = (e) => {
@@ -39,7 +42,6 @@ function WorkersDetails() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // updateMutate.mutate(updateInfo);
     if (image) {
       const photo = await upload(image);
       updateInfo.photo = photo;

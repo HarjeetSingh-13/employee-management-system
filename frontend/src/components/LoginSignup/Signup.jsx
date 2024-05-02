@@ -12,6 +12,40 @@ function Signup() {
     password: "",
   });
 
+  const check = () => {
+    var a = signupInfo.name;
+    if (a == "") {
+      alert("Name should not be empty");
+      return false;
+    } else if (a.length < 5) {
+      alert("Length of Name should not be less than 5");
+      return false;
+    } else if (!isNaN(a)) {
+      alert("Name should not be a number");
+      return false;
+    }
+    var email = signupInfo.email;
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email == "") {
+      alert("Email should not be empty");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      alert("Email criteria doesnt match");
+      return false;
+    }
+    var pass = signupInfo.password;
+    // var passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (pass == "") {
+      alert("Password should not be empty");
+      return false;
+    } 
+    // else if (!passRegex.test(pass)) {
+    //   alert("Password criteria doesnt match");
+    //   return false;
+    // }
+    return true;
+  };
+
   const signupMutate = useMutation({
     mutationFn: register,
     onSuccess: () => {
@@ -26,7 +60,10 @@ function Signup() {
     });
   };
   const handleSubmit = (e) => {
-    signupMutate.mutate(signupInfo);
+    let f = check();
+    if (f) {
+      signupMutate.mutate(signupInfo);
+    }
   };
 
   return (

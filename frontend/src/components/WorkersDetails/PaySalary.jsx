@@ -1,31 +1,32 @@
 import "./WorkersDetails.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getWorker, paySalary } from "../../api/api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { financialDetails, paySalary } from "../../api/api";
 import { useState } from "react";
 
 function PaySalary() {
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const params = useParams();
   const id = params.id;
 
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["workers", id],
-    queryFn: getWorker,
+    queryFn: financialDetails,
   });
 
   const [paymentInfo, setPaymentInfo] = useState({
-    netSalary : 0,
+    netSalary: 0,
     amount: 0,
     id: id,
   });
 
   const payMutate = useMutation({
     mutationFn: paySalary,
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries(workers);
-    // },
+    onSuccess: () => {
+      alert("Payment done successfully!");
+      navigate(`/financialdetails/${id}`);
+    },
   });
   const handleChange = (e) => {
     setPaymentInfo({
@@ -53,16 +54,28 @@ function PaySalary() {
               <form>
                 <p>
                   <label htmlFor="name">Net Salary</label>
-                  <input type="text" name="netSalary" id="netSalary" onChange={handleChange}/>
+                  <input
+                    type="text"
+                    name="netSalary"
+                    id="netSalary"
+                    value={data.netSalary}
+                    onChange={handleChange}
+                  />
                 </p>
                 <p>
                   <label htmlFor="phone">Amount</label>
-                  <input type="text" name="amount" id="amount" onChange={handleChange}/>
+                  <input
+                    type="text"
+                    name="amount"
+                    id="amount"
+                    onChange={handleChange}
+                  />
                 </p>
                 <p>
                   <button onClick={handleSubmit}>Pay</button>
                 </p>
               </form>
+              {/* </p> */}
             </div>
             <p className="closebtn">
               <Link to={`/financialdetails/${id}`}>

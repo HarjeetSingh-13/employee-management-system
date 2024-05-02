@@ -2,21 +2,19 @@ import "./Workers.css";
 import "../WorkersDetails/WorkersDetails.css";
 import { Link } from "react-router-dom";
 import { getDashboardInfo, getWorkers, markAttendance } from "../../api/api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery,useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 function Attendance() {
+  const queryClient = useQueryClient();
   const [attendance, setAttendance] = useState([]);
   const attendanceMutate = useMutation({
     mutationFn: markAttendance,
-    // onSuccess: () => {
-    //   navigate("/home");
-    // },
+    onSuccess: () => {
+      alert("attendance marked successfully");
+      queryClient.invalidateQueries(getDashboardInfo);
+    },
   });
-  // const { isLoading, isError, data, error } = useQuery({
-  //   queryKey: ["workers"],
-  //   queryFn: getWorkers,
-  // });
 
   const {
     isLoading: workersLoading,
@@ -82,9 +80,6 @@ function Attendance() {
       attendanceMutate.mutate(e);
     });
   };
-  // if (isLoading) return "loading...";
-  // if (isError) return `error: ${error.message}`;
-  // console.log(dashboard.attendance);
   return (
     <>
       <div className="middle">
@@ -101,13 +96,14 @@ function Attendance() {
                   <th>Attendance</th>
                 </tr>
               </thead>
-              {/* {dashboard.attendance ? (
+              {dashboard.attendance ? (
                 <>
                   {data.map((worker) => (
                     <tbody>
                       <tr>
                         <td>{worker.name}</td>
-                        <td>
+                        <td className={worker.attendance[worker.attendance.length - 1]
+                              .status === "present"?"success":"danger"}>
                           {
                             worker.attendance[worker.attendance.length - 1]
                               .status
@@ -118,7 +114,7 @@ function Attendance() {
                   ))}
                 </>
               ) : (
-                <> */}
+                <>
                   {data.map((worker) => (
                     <tbody>
                       <tr>
@@ -147,18 +143,18 @@ function Attendance() {
                       </tr>
                     </tbody>
                   ))}
-                {/* </>
-              )} */}
+                </>
+              )}
             </table>
           </div>
         </div>
-        {/* {dashboard.attendance ? (
+        {dashboard.attendance ? (
           <></>
-        ) : ( */}
+        ) : (
           <div className="attendancesub">
             <button onClick={handleSubmit}>Submit</button>
           </div>
-        {/* )} */}
+        )}
       </div>
     </>
   );

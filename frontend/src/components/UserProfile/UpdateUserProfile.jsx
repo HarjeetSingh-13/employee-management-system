@@ -28,6 +28,7 @@ function UserProfile() {
   const updateMutate = useMutation({
     mutationFn: updateUser,
     onSuccess: () => {
+      alert("User updated successfully!");
       queryClient.invalidateQueries(getUser);
     },
   });
@@ -49,7 +50,6 @@ function UserProfile() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // updateMutate.mutate(updateInfo);
     if (image) {
       const photo = await upload(image);
       updateInfo.photo = photo;
@@ -59,7 +59,6 @@ function UserProfile() {
 
   };
   const handlePasswordChange = (e) => {
-    // e.preventDefault();
     changePassMutate.mutate(changepass);
     setPassword({
       oldPassword:"",

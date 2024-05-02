@@ -31,7 +31,10 @@ function WorkersDetails() {
   });
   const handleDelete = () => {
     // e.preventDefault();
-    deleteMutate.mutate(id);
+    let f = confirm(`Do you really want to remove this worker?`);
+    if (f) {
+      deleteMutate.mutate(id);
+    }
   };
   const handleChange = (e) => {
     setAttendance(e.target.value);
@@ -100,22 +103,22 @@ function WorkersDetails() {
                 <th>
                   {updatePanel === false ? "Attendance" : "Set Attendance"}
                 </th>
+                <th
+                  className="primary updateAttendancebtn"
+                  onClick={(event) => handlePanel(event, data.date)}
+                >
+                  Update
+                </th>
+                {updatePanel === false ? (
+                  <></>
+                ) : (
                   <th
-                    className="primary updateAttendancebtn"
-                    onClick={(event) => handlePanel(event, data.date)}
+                    className="danger cancelUpdateAttendancebtn"
+                    onClick={closePanel}
                   >
-                    Update
+                    Cancel
                   </th>
-                  {updatePanel === false ? (
-                    <></>
-                  ) : (
-                    <th
-                      className="danger cancelUpdateAttendancebtn"
-                      onClick={closePanel}
-                    >
-                      Cancel
-                    </th>
-                  )}
+                )}
               </tr>
             </thead>
             {data.attendance.map((data) => (

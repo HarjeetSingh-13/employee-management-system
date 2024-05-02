@@ -16,9 +16,56 @@ function Workers() {
     salary: 0,
     photo: "",
   });
+
+  const check = () => {
+    var a = worker.name;
+    if (a == "") {
+      alert("name should not be empty");
+      return false;
+    } else if (a.length < 5) {
+      alert("Length of name should not be less than 5");
+      return false;
+    } else if (!isNaN(a)) {
+      alert("name should not be a number");
+      return false;
+    }
+
+    var b = worker.phoneNumber;
+    if (b == "") {
+      alert("Phone number should not be empty");
+      return false;
+    } else if (isNaN(b)) {
+      alert("Phone number must be a number");
+      return false;
+    } else if (b.length < 10) {
+      alert("Length of Phone number should not be less than 10");
+      return false;
+    }
+
+    var c = worker.age;
+    if (c == "") {
+      alert("Age should not be empty");
+      return false;
+    } else if (isNaN(c)) {
+      alert("Age must be a number");
+      return false;
+    }
+
+    var d = worker.salary;
+    if (d == "") {
+      alert("Pay Rate should not be empty");
+      return false;
+    } else if (isNaN(d)) {
+      alert("Pay Rate must be a number");
+      return false;
+    }
+    return true;
+  };
+
   const workerMutate = useMutation({
     mutationFn: createWorker,
     onSuccess: () => {
+      alert("worker added successfully!");
       navigate("/workers");
     },
   });
@@ -28,8 +75,10 @@ function Workers() {
       const photo = await upload(image);
       worker.photo = photo;
     }
-    console.log(worker)
-    workerMutate.mutate(worker);
+    let f = check();
+    if (f) {
+      workerMutate.mutate(worker);
+    }
   };
   const handleChange = (e) => {
     setWorker({
@@ -77,7 +126,7 @@ function Workers() {
                   />
                 </p>
                 <p>
-                  <label htmlFor="phone">Salary</label>
+                  <label htmlFor="phone">Pay Rate</label>
                   <input
                     type="text"
                     name="salary"

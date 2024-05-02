@@ -1,4 +1,3 @@
-// import List from "../List/List";
 import "./Workers.css";
 import "../WorkersDetails/WorkersDetails.css";
 import { Link } from "react-router-dom";
@@ -12,10 +11,6 @@ function Workers() {
   });
   if (isLoading) return "loading...";
   if (isError) return `error: ${error.message}`;
-
-  // const list = (data) => {
-
-  // }
 
   return (
     <>

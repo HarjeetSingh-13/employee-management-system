@@ -9,8 +9,9 @@ function Workers() {
     const navigate = useNavigate()
   const params = useParams();
   const id = params.id;
+  var todayDate = new Date().toLocaleDateString();
   const [loan, setLoan] = useState({
-    date: "",
+    date: todayDate,
     reason: "",
     amount: 0,
     id: id,
@@ -22,6 +23,7 @@ function Workers() {
   const loanMutate = useMutation({
     mutationFn: addloan,
     onSuccess: ()=>{
+      alert("Loan added successfully!");
       navigate(`/workerdetails/${id}`);
     }
   });
@@ -49,15 +51,6 @@ function Workers() {
             <div className="info-container">
               <h3>Add Loan</h3>
               <form>
-                <p>
-                  <label htmlFor="name">Date</label>
-                  <input
-                    type="date"
-                    name="date"
-                    id="date"
-                    onChange={handleChange}
-                  />
-                </p>
                 <p>
                   <label htmlFor="reason">Reason</label>
                   <input

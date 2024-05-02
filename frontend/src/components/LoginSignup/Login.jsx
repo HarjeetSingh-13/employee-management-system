@@ -5,27 +5,53 @@ import { login } from "../../api/api.js";
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [loginInfo, setLoginInfo] = useState({
     email: "",
-    password: ""
-  })
+    password: "",
+  });
   const loginMutate = useMutation({
     mutationFn: login,
-    onSuccess: ()=>{
-      navigate('/home');
+    onSuccess: () => {
+      navigate("/home");
+    },
+  });
+
+  const check = () => {
+    var email = loginInfo.email;
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email == "") {
+      alert("Email should not be empty");
+      return false;
+    } else if (!emailRegex.test(email)) {
+      alert("Email criteria doesnt match");
+      return false;
     }
-  })
+    var pass = loginInfo.password;
+    // var passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (pass == "") {
+      alert("Password should not be empty");
+      return false;
+    }
+    //  else if (!passRegex.test(pass)) {
+    //   alert("Password criteria doesnt match");
+    //   return false;
+    // }
+    return true;
+  };
+
   const handleSubmit = () => {
-    loginMutate.mutate(loginInfo);
+    let f = check();
+    if (f) {
+      loginMutate.mutate(loginInfo);
+    }
   };
   const handleChange = (e) => {
     setLoginInfo({
       ...loginInfo,
-      [e.target.name]: e.target.value
-    })
-  }
-
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <>
