@@ -247,16 +247,16 @@ const getDashboardInfo = asyncHandler(async (req, res) => {
 
   const formattedToday = dd + "/" + mm + "/" + yyyy;
 
-  const attendance = false;
+  let attendance = false;
 
   if (employer.attendance.length != 0) {
-    const lastAttendance = employer.attendance[attendance.length - 1];
-
+    const lastAttendance = employer.attendance.slice(-1);
+    // console.log(lastAttendance);
     attendance = lastAttendance[0].date === formattedToday;
   }
 
-  const totalRemainingPayment = 0;
-  const totalLoan = 0;
+  let totalRemainingPayment = 0;
+  let totalLoan = 0;
 
   if (workers.length != 0) {
     totalRemainingPayment = workers.reduce(
@@ -269,7 +269,6 @@ const getDashboardInfo = asyncHandler(async (req, res) => {
       0
     );
   }
-
   res.status(200).json({ totalRemainingPayment, totalLoan, attendance });
 });
 
