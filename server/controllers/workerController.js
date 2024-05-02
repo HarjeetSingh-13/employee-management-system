@@ -19,7 +19,7 @@ const createWorker = asyncHandler(async (req, res) => {
     phoneNumber,
     age,
     payRate,
-    photo
+    photo,
   });
 
   res.status(201).json(worker);
@@ -90,7 +90,6 @@ const updateWorker = asyncHandler(async (req, res) => {
     worker.phoneNumber = req.body.phoneNumber || phoneNumber;
     worker.age = req.body.age || age;
     worker.photo = req.body.photo || photo;
-    // console.log(worker.phoneNumber);
 
     const updatedworker = await worker.save();
     res.status(200).json({
@@ -150,8 +149,6 @@ const updateAttendance = asyncHandler(async (req, res) => {
 
 //get attendance
 const getAttendance = asyncHandler(async (req, res) => {
-  // const { status, date } = req.body;
-
   const worker = await Worker.findById(req.body.id);
 
   if (!worker) {
@@ -180,31 +177,15 @@ const getAttendanceD = asyncHandler(async (req, res) => {
 const addLoan = asyncHandler(async (req, res) => {
   const { date, reason, amount } = req.body;
   const worker = await Worker.findById(req.params.id);
-  // const employer = await Employer.findById(req.user._id);
-  // console.log("in");
   if (!worker) {
     res.status(400);
     throw new Error("Worker not found");
   } else {
     worker.loan.push({ date, reason, amount });
-    // console.log(employer);
-    // employer.totalLoan += amount;
-    // console.log(worker);
   }
-  // await employer.save();
   const result = await worker.save();
   return res.status(200).json(result);
 });
-
-// const getLoan = asyncHandler(async (req,res) => {
-//   const worker = await Worker.findById(req.body.id);
-
-//   if (!worker) {
-//     res.status(404);
-//     throw new Error("Worker not found");
-//   }
-//   return res.status(200).json(worker.loan);
-// })
 
 const finance = asyncHandler(async (req, res) => {
   const worker = await Worker.findById(req.params.id);
@@ -254,6 +235,8 @@ const getDashboardInfo = asyncHandler(async (req, res) => {
     "-createdAt"
   );
   const employer = await Employer.findById(req.user._id.toString());
+  // console.log(workers);
+  // console.log(employer);
   const today = new Date();
   const yyyy = today.getFullYear();
   let mm = today.getMonth() + 1;
@@ -264,19 +247,29 @@ const getDashboardInfo = asyncHandler(async (req, res) => {
 
   const formattedToday = dd + "/" + mm + "/" + yyyy;
 
-  const lastAttendance = employer.attendance.slice(-1);
+  const attendance = false;
 
-  const attendance = lastAttendance[0].date === formattedToday;
+  if (employer.attendance.length != 0) {
+    const lastAttendance = employer.attendance[attendance.length - 1];
 
-  const totalRemainingPayment = workers.reduce(
-    (count, worker) => count + worker.prevRemainingSalary,
-    0
-  );
-  const totalLoan = workers.reduce(
-    (count, worker) =>
-      count + worker.loan.reduce((c, loan) => c + loan.amount, 0),
-    0
-  );
+    attendance = lastAttendance[0].date === formattedToday;
+  }
+
+  const totalRemainingPayment = 0;
+  const totalLoan = 0;
+
+  if (workers.length != 0) {
+    totalRemainingPayment = workers.reduce(
+      (count, worker) => count + worker.prevRemainingSalary,
+      0
+    );
+    totalLoan = workers.reduce(
+      (count, worker) =>
+        count + worker.loan.reduce((c, loan) => c + loan.amount, 0),
+      0
+    );
+  }
+
   res.status(200).json({ totalRemainingPayment, totalLoan, attendance });
 });
 
