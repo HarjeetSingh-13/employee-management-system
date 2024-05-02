@@ -22,10 +22,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "http://127.0.0.1:5500/Project/reactapp/frontend/test.html",
-      "http://localhost:5173",
-      "https://employee-management-system-13.netlify.app/",
+      // "http://localhost:3000",
+      // "http://127.0.0.1:5500/Project/reactapp/frontend/test.html",
+      // "http://localhost:5173",
+      "https://employee-management-system-13.netlify.app",
     ],
     credentials: true,
   })
