@@ -2,7 +2,7 @@ import "./Workers.css";
 import "../WorkersDetails/WorkersDetails.css";
 import { Link } from "react-router-dom";
 import { getDashboardInfo, getWorkers, markAttendance } from "../../api/api";
-import { useMutation, useQuery,useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 function Attendance() {
@@ -100,16 +100,26 @@ function Attendance() {
                 <>
                   {data.map((worker) => (
                     <tbody>
-                      <tr>
-                        <td>{worker.name}</td>
-                        <td className={worker.attendance[worker.attendance.length - 1]
-                              .status === "present"?"success":"danger"}>
-                          {
-                            worker.attendance[worker.attendance.length - 1]
-                              .status
-                          }
-                        </td>
-                      </tr>
+                      {worker.attendance.length != 0 ? (
+                        <tr>
+                          <td>{worker.name}</td>
+                          <td
+                            className={
+                              worker.attendance[worker.attendance.length - 1]
+                                .status === "present"
+                                ? "success"
+                                : "danger"
+                            }
+                          >
+                            {
+                              worker.attendance[worker.attendance.length - 1]
+                                .status
+                            }
+                          </td>
+                        </tr>
+                      ) : (
+                        <></>
+                      )}
                     </tbody>
                   ))}
                 </>

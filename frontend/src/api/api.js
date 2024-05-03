@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const serverApi = axios.create({
-  // baseURL: "http://localhost:5000/api",
-  baseURL: "https://employee-management-system-jg3t.onrender.com/api",
+  baseURL: "http://localhost:5000/api",
+  // baseURL: "https://employee-management-system-jg3t.onrender.com/api",
   withCredentials: true,
 });
 

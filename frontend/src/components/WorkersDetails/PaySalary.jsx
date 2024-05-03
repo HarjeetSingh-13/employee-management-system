@@ -36,6 +36,7 @@ function PaySalary() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    paymentInfo.netSalary = data.netSalary;
     payMutate.mutate(paymentInfo);
   };
 
@@ -54,13 +55,14 @@ function PaySalary() {
               <form>
                 <p>
                   <label htmlFor="name">Net Salary</label>
-                  <input
+                  {/* <input
                     type="text"
                     name="netSalary"
                     id="netSalary"
                     value={data.netSalary}
                     onChange={handleChange}
-                  />
+                  /> */}
+                  <p>{data.netSalary}</p>
                 </p>
                 <p>
                   <label htmlFor="phone">Amount</label>
