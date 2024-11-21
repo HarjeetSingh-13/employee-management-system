@@ -24,6 +24,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://127.0.0.1:5500/Project/reactapp/frontend/test.html",
+      "http://localhost:5174",
       "http://localhost:5173",
       "https://employee-management-system-13.netlify.app",
     ],
@@ -42,6 +43,9 @@ app.use("/api/workers", attendanceRoute);
 app.get("/", (req, res) => {
   res.send("Home Page");
 });
+
+// console.log(process.env.MONGO_URI);
+// console.log(process.env.PORT);
 
 // Error Middleware
 // app.use(errorHandler);
