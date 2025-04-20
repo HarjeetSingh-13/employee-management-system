@@ -12,7 +12,7 @@ pipeline {
             agent any
             steps {
                 cleanWs()
-                git branch: 'main', 
+                git branch: 'master', 
                 url: 'https://github.com/HarjeetSingh-13/employee-management-system.git'
             }
         }
