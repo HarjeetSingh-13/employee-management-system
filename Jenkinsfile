@@ -8,14 +8,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/yourusername/yourrepo.git'
+                git branch: 'main', url: 'https://github.com/HarjeetSingh-13/employee-management-system.git'
             }
         }
         
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
-                    sh 'docker build -t yourusername/frontend:latest .'
+                    sh 'docker build -t harjeetsingh13/frontend:latest .'
                 }
             }
         }
@@ -23,7 +23,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('server') {
-                    sh 'docker build -t yourusername/backend:latest .'
+                    sh 'docker build -t harjeetsingh13/backend:latest .'
                 }
             }
         }
@@ -36,8 +36,8 @@ pipeline {
         
         stage('Push Images') {
             steps {
-                sh 'docker push yourusername/frontend:latest'
-                sh 'docker push yourusername/backend:latest'
+                sh 'docker push harjeetsingh13/frontend:latest'
+                sh 'docker push harjeetsingh13/backend:latest'
             }
         }
         
