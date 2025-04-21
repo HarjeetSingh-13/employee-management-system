@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
 
     environment {
         DOCKER_HUB = credentials('docker-hub-creds')
@@ -9,19 +9,15 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent any
             steps {
                 cleanWs()
-                git branch: 'master', 
-                    url: 'https://github.com/HarjeetSingh-13/employee-management-system.git'
+                checkout scm
             }
         }
 
         stage('Setup Node.js') {
-            agent any
             steps {
-                // Install Node.js using Jenkins NodeJS plugin
-                nodejs(nodeJSInstallationName: 'Node 23.x', configId: 'Node 23.x') {
+                nodejs(nodeJSInstallationName: 'Node 23.x') {
                     sh 'node --version'
                     sh 'npm --version'
                 }
@@ -29,7 +25,6 @@ pipeline {
         }
 
         stage('Build Frontend') {
-            agent any
             steps {
                 dir('frontend') {
                     sh 'npm install'
@@ -39,29 +34,32 @@ pipeline {
         }
 
         stage('Build Images') {
-            agent any
             steps {
-                sh 'docker build -t ${DOCKER_HUB_USR}/ems-frontend ./frontend'
-                sh 'docker build -t ${DOCKER_HUB_USR}/ems-backend ./server'
+                script {
+                    sh 'docker build -t ${DOCKER_HUB_USR}/ems-frontend ./frontend'
+                    sh 'docker build -t ${DOCKER_HUB_USR}/ems-backend ./server'
+                }
             }
         }
 
         stage('Push Images') {
-            agent any
             steps {
-                sh 'echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin'
-                sh 'docker push ${DOCKER_HUB_USR}/ems-frontend'
-                sh 'docker push ${DOCKER_HUB_USR}/ems-backend'
+                script {
+                    sh 'echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin'
+                    sh 'docker push ${DOCKER_HUB_USR}/ems-frontend'
+                    sh 'docker push ${DOCKER_HUB_USR}/ems-backend'
+                }
             }
         }
 
         stage('Deploy') {
-            agent any
             steps {
-                sh 'echo "MONGO_URI=${MONGO_URI}" > .env'
-                sh 'echo "JWT_SECRET=${JWT_SECRET}" >> .env'
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d'
+                script {
+                    sh 'echo "MONGO_URI=${MONGO_URI}" > .env'
+                    sh 'echo "JWT_SECRET=${JWT_SECRET}" >> .env'
+                    sh 'docker-compose down || true'
+                    sh 'docker-compose up -d'
+                }
             }
         }
     }
