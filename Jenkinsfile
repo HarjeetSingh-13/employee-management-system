@@ -11,14 +11,17 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
-                sh 'ls -la'
+                sh 'rm -rf employee-management-system || true'  // cleanup
+                sh 'git clone https://github.com/HarjeetSingh-13/employee-management-system.git'
+                sh 'ls -la employee-management-system'
             }
         }
 
         stage('Build Images') {
             steps {
-                sh 'docker-compose build'
+                dir('employee-management-system') {
+                    sh 'docker-compose build'
+                }
             }
         }
 
@@ -30,25 +33,29 @@ pipeline {
 
         stage('Push Images') {
             steps {
-                sh '''
-                docker tag employee-management-system_frontend:latest $DOCKERHUB_USERNAME/ems-frontend:latest
-                docker tag employee-management-system_backend:latest $DOCKERHUB_USERNAME/ems-backend:latest
+                dir('employee-management-system') {
+                    sh '''
+                    docker tag employee-management-system_frontend:latest $DOCKERHUB_USERNAME/ems-frontend:latest
+                    docker tag employee-management-system_backend:latest $DOCKERHUB_USERNAME/ems-backend:latest
 
-                docker push $DOCKERHUB_USERNAME/ems-frontend:latest
-                docker push $DOCKERHUB_USERNAME/ems-backend:latest
-                '''
+                    docker push $DOCKERHUB_USERNAME/ems-frontend:latest
+                    docker push $DOCKERHUB_USERNAME/ems-backend:latest
+                    '''
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                sh '''
-                echo "MONGO_URI=$MONGO_URI" > .env
-                echo "JWT_SECRET=$JWT_SECRET" >> .env
+                dir('employee-management-system') {
+                    sh '''
+                    echo "MONGO_URI=$MONGO_URI" > .env
+                    echo "JWT_SECRET=$JWT_SECRET" >> .env
 
-                docker-compose down || echo "No containers to stop"
-                docker-compose up -d
-                '''
+                    docker-compose down || echo "No containers to stop"
+                    docker-compose up -d
+                    '''
+                }
             }
         }
     }
