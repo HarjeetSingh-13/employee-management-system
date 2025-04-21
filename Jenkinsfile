@@ -2,13 +2,15 @@ pipeline {
     agent any
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds')
+        MONGO_URI = credentials('mongo-uri')
+        JWT_SECRET = credentials('jwt-secret')
     }
     
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/HarjeetSingh-13/employee-management-system.git'
+                git branch: 'master', url: 'https://github.com/HarjeetSingh-13/employee-management-system.git'
             }
         }
         
@@ -43,7 +45,7 @@ pipeline {
         
         stage('Deploy') {
             steps {
-                sh 'docker-compose down'
+                sh 'docker-compose down || true'
                 sh 'docker-compose up -d'
             }
         }
@@ -51,7 +53,9 @@ pipeline {
     
     post {
         always {
-            sh 'docker logout'
+            node {
+                sh 'docker logout'
+            }
         }
     }
 }
