@@ -21,7 +21,7 @@ pipeline {
             agent any
             steps {
                 // Install Node.js using Jenkins NodeJS plugin
-                nodejs(nodeJSInstallationName: 'Node 23.x', configId: '<your-nodejs-config-id>') {
+                nodejs(nodeJSInstallationName: 'Node 23.x', configId: 'Node 23.x') {
                     sh 'node --version'
                     sh 'npm --version'
                 }
