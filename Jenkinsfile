@@ -12,29 +12,29 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                bat 'dir'
+                sh 'dir'
             }
         }
         
         stage('Build Images') {
             steps {
-                bat 'docker-compose build'
+                sh 'docker-compose build'
             }
         }
         
         stage('Login to Docker Hub') {
             steps {
-                bat 'echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_USERNAME% --password-stdin'
+                sh 'echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_USERNAME% --password-stdin'
             }
         }
         
         stage('Push Images') {
             steps {
-                bat "docker tag employee-management-system_frontend:latest %DOCKERHUB_USERNAME%/ems-frontend:latest"
-                bat "docker tag employee-management-system_backend:latest %DOCKERHUB_USERNAME%/ems-backend:latest"
+                sh "docker tag employee-management-system_frontend:latest %DOCKERHUB_USERNAME%/ems-frontend:latest"
+                sh "docker tag employee-management-system_backend:latest %DOCKERHUB_USERNAME%/ems-backend:latest"
                 
-                bat "docker push %DOCKERHUB_USERNAME%/ems-frontend:latest"
-                bat "docker push %DOCKERHUB_USERNAME%/ems-backend:latest"
+                sh "docker push %DOCKERHUB_USERNAME%/ems-frontend:latest"
+                sh "docker push %DOCKERHUB_USERNAME%/ems-backend:latest"
             }
         }
         
@@ -47,15 +47,15 @@ pipeline {
                 '''
                 
                 // Deploy with docker-compose
-                bat 'docker-compose down || echo "No containers to stop"'
-                bat 'docker-compose up -d'
+                sh 'docker-compose down || echo "No containers to stop"'
+                sh 'docker-compose up -d'
             }
         }
     }
     
     post {
         always {
-            bat 'docker logout'
+            sh 'docker logout'
         }
     }
 }
