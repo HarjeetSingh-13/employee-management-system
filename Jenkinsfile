@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:dind'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
     
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds')
@@ -19,32 +14,23 @@ pipeline {
             }
         }
         
-        stage('Build Frontend') {
+        stage('Build and Push') {
             steps {
-                dir('frontend') {
-                    sh 'docker build -t harjeetsingh13/frontend:latest .'
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-creds') {
+                        // Build and push frontend
+                        dir('frontend') {
+                            def frontendImage = docker.build("harjeetsingh13/frontend:latest")
+                            frontendImage.push()
+                        }
+                        
+                        // Build and push backend
+                        dir('server') {
+                            def backendImage = docker.build("harjeetsingh13/backend:latest")
+                            backendImage.push()
+                        }
+                    }
                 }
-            }
-        }
-        
-        stage('Build Backend') {
-            steps {
-                dir('server') {
-                    sh 'docker build -t harjeetsingh13/backend:latest .'
-                }
-            }
-        }
-        
-        stage('Login to Docker Hub') {
-            steps {
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-            }
-        }
-        
-        stage('Push Images') {
-            steps {
-                sh 'docker push harjeetsingh13/frontend:latest'
-                sh 'docker push harjeetsingh13/backend:latest'
             }
         }
         
@@ -53,12 +39,6 @@ pipeline {
                 sh 'docker-compose down || true'
                 sh 'docker-compose up -d'
             }
-        }
-    }
-    
-    post {
-        always {
-            sh 'docker logout'
         }
     }
 }
