@@ -1,5 +1,5 @@
 pipeline {
-    agent none 
+    agent none
 
     environment {
         DOCKER_HUB = credentials('docker-hub-creds')
@@ -13,12 +13,17 @@ pipeline {
             steps {
                 cleanWs()
                 git branch: 'master', 
-                url: 'https://github.com/HarjeetSingh-13/employee-management-system.git'
+                    url: 'https://github.com/HarjeetSingh-13/employee-management-system.git'
             }
         }
 
         stage('Build Frontend') {
-            agent any
+            agent {
+                docker {
+                    image 'node:23.11.0'
+                    args '-v /tmp/.npm:/root/.npm'
+                }
+            }
             steps {
                 dir('frontend') {
                     sh 'npm install'
