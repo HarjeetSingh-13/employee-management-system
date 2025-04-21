@@ -18,13 +18,7 @@ pipeline {
         }
 
         stage('Build Frontend') {
-            agent {
-                docker {
-                    image 'node:23.11.0' 
-                    args '-v /tmp/.npm:/root/.npm' 
-                    reuseNode true
-                }
-            }
+            agent any
             steps {
                 dir('frontend') {
                     sh 'npm install'
