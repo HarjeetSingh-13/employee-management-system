@@ -2,8 +2,8 @@ pipeline {
     agent any
     
     environment {
-        DOCKERHUB_USERNAME = credentials('docker-hub-creds').username  // Change this to your Docker Hub username
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds').password
+        DOCKERHUB_USERNAME =  "harjeetsingh13" // Change this to your Docker Hub username
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds')
         MONGO_URI = credentials('mongo-uri')
         JWT_SECRET = credentials('jwt-secret')
     }
