@@ -17,13 +17,19 @@ pipeline {
             }
         }
 
-        stage('Build Frontend') {
-            agent {
-                docker {
-                    image 'node:23.11.0'
-                    args '-v /tmp/.npm:/root/.npm'
+        stage('Setup Node.js') {
+            agent any
+            steps {
+                // Install Node.js using Jenkins NodeJS plugin
+                nodejs(nodeJSInstallationName: 'Node 23.x', configId: '<your-nodejs-config-id>') {
+                    sh 'node --version'
+                    sh 'npm --version'
                 }
             }
+        }
+
+        stage('Build Frontend') {
+            agent any
             steps {
                 dir('frontend') {
                     sh 'npm install'
