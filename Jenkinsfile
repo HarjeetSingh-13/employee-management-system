@@ -2,7 +2,8 @@ pipeline {
     agent any
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds')
+        DOCKERHUB_USERNAME = credentials('docker-hub-creds').username  // Change this to your Docker Hub username
+        DOCKERHUB_CREDENTIALS = credentials('docker-hub-creds').password
         MONGO_URI = credentials('mongo-uri')
         JWT_SECRET = credentials('jwt-secret')
     }
@@ -10,35 +11,51 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/HarjeetSingh-13/employee-management-system.git'
+                checkout scm
+                bat 'dir'
             }
         }
         
-        stage('Build and Push') {
+        stage('Build Images') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-creds') {
-                        // Build and push frontend
-                        dir('frontend') {
-                            def frontendImage = docker.build("harjeetsingh13/frontend:latest")
-                            frontendImage.push()
-                        }
-                        
-                        // Build and push backend
-                        dir('server') {
-                            def backendImage = docker.build("harjeetsingh13/backend:latest")
-                            backendImage.push()
-                        }
-                    }
-                }
+                bat 'docker-compose build'
+            }
+        }
+        
+        stage('Login to Docker Hub') {
+            steps {
+                bat 'echo %DOCKERHUB_CREDENTIALS_PSW% | docker login -u %DOCKERHUB_USERNAME% --password-stdin'
+            }
+        }
+        
+        stage('Push Images') {
+            steps {
+                bat "docker tag employee-management-system_frontend:latest %DOCKERHUB_USERNAME%/ems-frontend:latest"
+                bat "docker tag employee-management-system_backend:latest %DOCKERHUB_USERNAME%/ems-backend:latest"
+                
+                bat "docker push %DOCKERHUB_USERNAME%/ems-frontend:latest"
+                bat "docker push %DOCKERHUB_USERNAME%/ems-backend:latest"
             }
         }
         
         stage('Deploy') {
             steps {
-                sh 'docker-compose down || true'
-                sh 'docker-compose up -d'
+                // Create .env file with credentials
+                powershell '''
+                "MONGO_URI=$env:MONGO_URI" | Out-File -FilePath .env -Encoding utf8
+                "JWT_SECRET=$env:JWT_SECRET" | Add-Content -Path .env -Encoding utf8
+                '''
+                
+                // Deploy with docker-compose
+                bat 'docker-compose down || echo "No containers to stop"'
+                bat 'docker-compose up -d'
             }
+        }
+    }
+    
+    post {
+        always {
+            bat 'docker logout'
         }
     }
 }
