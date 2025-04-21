@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                sh 'rm -rf employee-management-system || true'  // cleanup
+                sh 'rm -rf employee-management-system || true' 
                 sh 'git clone https://github.com/HarjeetSingh-13/employee-management-system.git'
                 sh 'ls -la employee-management-system'
             }
