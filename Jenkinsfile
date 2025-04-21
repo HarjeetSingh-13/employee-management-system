@@ -45,20 +45,11 @@ pipeline {
         stage('Push Images') {
             steps {
                 script {
-                    sh 'echo $DOCKER_HUB_PSW | docker login -u $DOCKER_HUB_USR --password-stdin'
-                    sh 'docker push ${DOCKER_HUB_USR}/ems-frontend'
-                    sh 'docker push ${DOCKER_HUB_USR}/ems-backend'
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    sh 'echo "MONGO_URI=${MONGO_URI}" > .env'
-                    sh 'echo "JWT_SECRET=${JWT_SECRET}" >> .env'
-                    sh 'docker-compose down || true'
-                    sh 'docker-compose up -d'
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                        sh 'docker push ${DOCKER_HUB_USR}/ems-frontend'
+                        sh 'docker push ${DOCKER_HUB_USR}/ems-backend'
+                    }
                 }
             }
         }
