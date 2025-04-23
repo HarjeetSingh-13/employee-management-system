@@ -11,7 +11,7 @@ function Homep() {
   return (
     <>
       <Leftsidebar isClassToggled={isClassToggled} activePage={"dashboard"}/>
-      Testing 1...
+      Testing 2...
       <Dashboard />
       <Rightsidebar toggleClass={toggleClass}/>
     </>
